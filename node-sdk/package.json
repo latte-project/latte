@@ -1,0 +1,16 @@
+{
+  "name": "latte-node",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Milky Natas",
+  "license": "ISC",
+  "dependencies": {
+    "net": "^1.0.2",
+    "promise-socket": "^7.0.0"
+  }
+}
