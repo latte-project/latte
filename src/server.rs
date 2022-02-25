@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::future::Future;
 
 use tokio::net::TcpListener;
@@ -34,7 +33,7 @@ impl Server {
             mpsc::channel(16);
 
         tokio::spawn(async move {
-            let mut db = HashMap::new();
+            let mut db = crate::db::Db::new();
             while let Some(req) = rx.recv().await {
                 crate::db::handle_request(req, &mut db).await;
             }

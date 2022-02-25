@@ -1,7 +1,6 @@
 use tokio::{net::{TcpStream, tcp::{OwnedReadHalf, OwnedWriteHalf}}, io::{AsyncWriteExt, BufReader, AsyncBufReadExt}};
 use crate::apis::{RequestMessage, ResponseMessage};
 
-
 pub struct Connection {
     // stream: TcpStream,
     read_stream: BufReader<OwnedReadHalf>,

@@ -1,18 +1,17 @@
 use serde::{Serialize, Deserialize};
 use tokio::sync::oneshot::Sender;
 
-use crate::{func::LatteObject, ObjectRef};
+use crate::{func::{LatteObject, Error}, ObjectRef};
 
-use self::{get::Get, set::Set};
+use self::{get::Get, set::Set, register::Register};
 
 pub mod get;
 pub mod set;
+pub mod register;
 
 #[derive(Serialize, Deserialize)]
-pub enum RequestMessage {
-    // Register {
-    //     func_spec: FuncSpec, 
-    // }, 
+pub(crate) enum RequestMessage {
+    Register(register::Register),
     // Invoke {
     //     fname: String,
     //     args: Vec<FuncArgSpec>, 
@@ -26,10 +25,10 @@ pub enum ResponseMessage {
     LatteObject(LatteObject), 
     ObjectRef(ObjectRef),
     Success,
-    Fail, 
+    Fail(String),
 } 
 
-pub enum Command {
+pub(crate) enum Command {
     Get {
         cmd: Get,
         responder: Sender<LatteObject>,
@@ -37,5 +36,9 @@ pub enum Command {
     Set {
         cmd: Set, 
         responder: Sender<()>,
-    }
+    }, 
+    Register {
+        cmd: Register, 
+        responder: Sender<Result<(), Error>>,
+    },
 }

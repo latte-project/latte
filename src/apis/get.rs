@@ -1,11 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{func::LatteObject, ObjectRef};
-
-#[derive(Serialize, Deserialize, Clone)]
-pub struct FuncArgSpec(LatteObject);
+use crate::ObjectRef;
 
 #[derive(Serialize, Deserialize)]
-pub struct Get {
+pub(crate) struct Get {
     pub(crate) object_ref: ObjectRef,
 }
