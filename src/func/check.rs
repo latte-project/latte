@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
-use super::{Error, spec::FuncSpec};
+use super::{spec::FuncSpec, Error};
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct LatteFunction;

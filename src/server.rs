@@ -6,9 +6,7 @@ use tokio::sync::mpsc;
 use crate::connection::Connection;
 
 pub async fn run(listener: TcpListener, shutdown: impl Future) {
-    let mut server = Server{ 
-        listener,
-    };
+    let mut server = Server { listener };
     tokio::select! {
         res = server.run() => {
             if let Err(err) = res {
@@ -29,8 +27,7 @@ struct Server {
 impl Server {
     async fn run(&mut self) -> crate::Result<()> {
         println!("accepting requests ...");
-        let (tx, mut rx) = 
-            mpsc::channel(16);
+        let (tx, mut rx) = mpsc::channel(16);
 
         tokio::spawn(async move {
             let mut db = crate::db::Db::new();
@@ -45,9 +42,7 @@ impl Server {
             let connection = Connection::new(socket);
             let new_tx = tx.clone();
 
-            tokio::spawn(async move {
-                crate::reader::tcp_reader(new_tx, connection).await
-            });
+            tokio::spawn(async move { crate::reader::tcp_reader(new_tx, connection).await });
         }
     }
 }

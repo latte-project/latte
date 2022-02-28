@@ -5,7 +5,7 @@ use crate::func::{deno::DenoFunc, spec::FuncSpec};
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Register {
     pub(crate) func_name: String,
-    pub(crate) func_lang: Lang, 
+    pub(crate) func_lang: Lang,
     pub(crate) func_body: String,
 }
 
@@ -20,7 +20,7 @@ impl Register {
             Lang::Deno => FuncSpec::Deno(DenoFunc {
                 fname: self.func_name,
                 body: self.func_body,
-            })
+            }),
         }
     }
 }

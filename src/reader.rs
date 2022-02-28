@@ -2,16 +2,22 @@ use std::io::ErrorKind;
 
 use tokio::sync::{mpsc::Sender, oneshot};
 
-use crate::{apis::{RequestMessage, Command, ResponseMessage}, connection::Connection};
+use crate::{
+    apis::{Command, RequestMessage, ResponseMessage},
+    connection::Connection,
+};
 
-pub(crate) async fn tcp_reader(cmd_tx: Sender<Command>, mut connection: Connection) -> crate::Result<()> {
+pub(crate) async fn tcp_reader(
+    cmd_tx: Sender<Command>,
+    mut connection: Connection,
+) -> crate::Result<()> {
     while let Ok(req) = connection.read_request().await {
         match req {
             RequestMessage::Get(get) => {
                 let (tx, rx) = oneshot::channel();
                 let cmd = Command::Get {
                     cmd: get,
-                    responder: tx, 
+                    responder: tx,
                 };
                 if let Err(e) = cmd_tx.send(cmd).await {
                     println!("sender dropped, command get, error {}", e);
@@ -20,11 +26,11 @@ pub(crate) async fn tcp_reader(cmd_tx: Sender<Command>, mut connection: Connecti
                     let resp = ResponseMessage::LatteObject(lo);
                     connection.write_response(resp).await?
                 }
-            },
+            }
             RequestMessage::Set(set) => {
                 let (tx, rx) = oneshot::channel();
                 let cmd = Command::Set {
-                    cmd: set, 
+                    cmd: set,
                     responder: tx,
                 };
                 if let Err(e) = cmd_tx.send(cmd).await {
@@ -34,11 +40,11 @@ pub(crate) async fn tcp_reader(cmd_tx: Sender<Command>, mut connection: Connecti
                     let resp = ResponseMessage::Success;
                     connection.write_response(resp).await?
                 }
-            },
+            }
             RequestMessage::Register(reg) => {
                 let (tx, rx) = oneshot::channel();
                 let cmd = Command::Register {
-                    cmd: reg, 
+                    cmd: reg,
                     responder: tx,
                 };
                 if let Err(e) = cmd_tx.send(cmd).await {
@@ -53,10 +59,13 @@ pub(crate) async fn tcp_reader(cmd_tx: Sender<Command>, mut connection: Connecti
                         let resp = ResponseMessage::Fail(e);
                         connection.write_response(resp).await?
                     }
-                    Err(_) => ()
+                    Err(_) => (),
                 }
             }
         }
     }
-    Err(std::io::Error::new(ErrorKind::Other, "received illegal request"))
+    Err(std::io::Error::new(
+        ErrorKind::Other,
+        "received illegal request",
+    ))
 }
