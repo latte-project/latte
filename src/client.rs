@@ -42,6 +42,11 @@ impl Client {
         }
     }
 
+    pub async fn invoke(&mut self, func_name: &String, args: &Vec<LatteObject>) -> crate::Result<ObjectRef> {
+        
+        todo!()
+    }
+
     pub async fn set(
         &mut self,
         object_ref: &ObjectRef,

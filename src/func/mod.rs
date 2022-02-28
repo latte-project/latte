@@ -2,6 +2,7 @@ pub(crate) mod check;
 pub(crate) mod deno;
 pub(crate) mod ftable;
 pub(crate) mod spec;
+pub(crate) mod wasm;
 
 use serde::{Deserialize, Serialize};
 

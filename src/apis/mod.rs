@@ -6,19 +6,17 @@ use crate::{
     ObjectRef,
 };
 
-use self::{get::Get, register::Register, set::Set};
+use self::{get::Get, register::Register, set::Set, invoke::Invoke};
 
 pub mod get;
 pub mod register;
 pub mod set;
+pub mod invoke;
 
 #[derive(Serialize, Deserialize)]
 pub(crate) enum RequestMessage {
     Register(register::Register),
-    // Invoke {
-    //     fname: String,
-    //     args: Vec<FuncArgSpec>,
-    // },
+    Invoke(invoke::Invoke),
     Get(get::Get),
     Set(set::Set),
 }
@@ -44,4 +42,8 @@ pub(crate) enum Command {
         cmd: Register,
         responder: Sender<Result<(), Error>>,
     },
+    Invoke {
+        cmd: Invoke, 
+        responder: Sender<Result<ObjectRef, Error>>,
+    }
 }

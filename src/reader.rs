@@ -62,6 +62,27 @@ pub(crate) async fn tcp_reader(
                     Err(_) => (),
                 }
             }
+            RequestMessage::Invoke(invoke) => {
+                let (tx, rx) = oneshot::channel();
+                let cmd = Command::Invoke {
+                    cmd: invoke, 
+                    responder: tx, 
+                };
+                if let Err(e) = cmd_tx.send(cmd).await {
+                    println!("sender dropped, command invoke, error {}", e);
+                }
+                match rx.await {
+                    Ok(Ok(or)) => {
+                        let resp = ResponseMessage::ObjectRef(or);
+                        connection.write_response(resp).await?
+                    },
+                    Ok(Err(e)) => {
+                        let resp = ResponseMessage::Fail(e);
+                        connection.write_response(resp).await?
+                    },
+                    Err(_) => ()
+                }
+            }
         }
     }
     Err(std::io::Error::new(

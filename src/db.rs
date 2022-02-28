@@ -51,6 +51,18 @@ pub(crate) async fn handle_request(req: Command, db: &mut Db) {
                 Err(e) => responder.send(Err(e)).map_err(|_e| ()),
             }
         }
+        Command::Invoke { cmd, responder } => {
+            let fname = cmd.fname.clone();
+            println!("request invoke: {}", fname);
+            match ftable.get(&fname) {
+                Some(latte_function) => {
+                    todo!()
+                }
+                None => {
+                    responder.send(Err(format!("function {} not found", fname))).map_err(|_e| ())
+                }
+            }
+        }
     };
     let _ = result.map_err(|()| {
         println!("responder dropped");
